@@ -76,15 +76,36 @@
     <h2>用户登录</h2>
 
     <div class="input-box">
-      <input type="text" placeholder="请输入账号">
+      <input id="username" type="text" placeholder="请输入账号">
     </div>
 
     <div class="input-box">
-      <input type="password" placeholder="请输入密码">
+      <input id="password" type="password" placeholder="请输入密码">
     </div>
 
-    <button onclick="alert('登录成功！🎉')">登录</button>
+    <button onclick="login()">登录</button>
   </div>
+
+  <script>
+    function login() {
+      // 拿到用户输入的账号和密码
+      let user = document.getElementById("username").value;
+      let pwd = document.getElementById("password").value;
+
+      // 设置正确的账号密码
+      let rightUser = "admin";
+      let rightPwd = "123456";
+
+      // 判断
+      if (user === rightUser && pwd === rightPwd) {
+        alert("登录成功！欢迎回来！🎉");
+        // 登录成功后跳转到主页
+        window.location.href = "index.html";
+      } else {
+        alert("账号或密码错误！❌");
+      }
+    }
+  </script>
 
 </body>
 
