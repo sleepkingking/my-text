@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>仿微信界面</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      background: #f5f5f5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 手机外壳 */
+    .phone {
+      width: 375px;
+      height: 700px;
+      background: #fff;
+      border-radius: 40px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 顶部导航 */
+    .header {
+      background: #128cfe;
+      color: white;
+      padding: 60px 15px 15px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* 聊天列表 */
+    .chat-list {
+      padding: 10px;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      background: #ddd;
+      margin-right: 12px;
+    }
+
+    .info {
+      flex: 1;
+    }
+
+    .name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .msg {
+      font-size: 14px;
+      color: #999;
+    }
+
+    /* 底部导航 */
+    .footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #fff;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .tab {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+
+    .tab.active {
+      color: #128cfe;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="phone">
+    <div class="header">微信</div>
+
+    <div class="chat-list">
+      <div class="item">
+        <div class="avatar"></div>
+        <div class="info">
+          <div class="name">豆包</div>
+          <div class="msg">冲！我们继续学！</div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="avatar"></div>
+        <div class="info">
+          <div class="name">前端学习群</div>
+          <div class="msg">你真棒！继续加油！</div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="avatar"></div>
+        <div class="info">
+          <div class="name">自己</div>
+          <div class="msg">我学会做网页啦！</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="tab active">微信</div>
+      <div class="tab">通讯录</div>
+      <div class="tab">发现</div>
+      <div class="tab">我</div>
+    </div>
+  </div>
+</body>
+
+</html>
