@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>我的第一个网页</title>
+    <title>我的个人主页</title>
     <style>
         * {
             margin: 0;
@@ -29,17 +29,32 @@
             max-width: 500px;
         }
 
-        h1 {
-            font-size: 36px;
-            color: #222;
+        /* 头像 */
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #20bdff;
             margin-bottom: 20px;
         }
 
-        p {
-            font-size: 18px;
+        h1 {
+            font-size: 32px;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .desc {
+            font-size: 16px;
             color: #666;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            font-size: 14px;
+            color: #888;
             margin-bottom: 30px;
-            line-height: 1.6;
         }
 
         button {
@@ -63,9 +78,14 @@
 <body>
 
     <div class="card">
-        <h1>你好！我是前端新手</h1>
-        <p>这是我写的第一个美化版网页，渐变背景 + 卡片布局，超好看！</p>
-        <button onclick="alert('网页美化成功啦！🎉')">点我有惊喜</button>
+        <!-- 头像 -->
+        <img class="avatar" src="https://picsum.photos/200/200">
+
+        <h1>我的个人主页</h1>
+        <p class="desc">一个正在学习前端的新手</p>
+        <p class="info">今天成功写出了第一个漂亮网页！</p>
+
+        <button onclick="alert('我的主页超好看！🎉')">点我点赞</button>
     </div>
 
 </body>
