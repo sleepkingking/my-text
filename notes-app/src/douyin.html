@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>仿抖音界面</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* 手机外壳 */
+    .phone {
+      width: 375px;
+      height: 700px;
+      background: #111;
+      border-radius: 40px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 顶部 */
+    .top {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      right: 0;
+      color: white;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      z-index: 10;
+    }
+
+    .top span.active {
+      border-bottom: 2px solid white;
+      padding-bottom: 4px;
+    }
+
+    /* 视频区域 */
+    .video {
+      width: 100%;
+      height: 100%;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+
+    /* 右侧功能栏 */
+    .actions {
+      position: absolute;
+      right: 20px;
+      bottom: 120px;
+      color: white;
+      text-align: center;
+    }
+
+    .item {
+      margin-bottom: 30px;
+    }
+
+    .item .icon {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .item .text {
+      font-size: 12px;
+    }
+
+    /* 底部导航 */
+    .footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #111;
+      color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      text-align: center;
+      font-size: 11px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="phone">
+    <div class="top">
+      <span class="active">关注</span>
+      <span>推荐</span>
+    </div>
+
+    <div class="video">
+      抖音视频播放区域
+    </div>
+
+    <div class="actions">
+      <div class="item">
+        <div class="icon">❤️</div>
+        <div class="text">1.2w</div>
+      </div>
+      <div class="item">
+        <div class="icon">💬</div>
+        <div class="text">328</div>
+      </div>
+      <div class="item">
+        <div class="icon">➡️</div>
+        <div class="text">分享</div>
+      </div>
+      <div class="item">
+        <div class="icon">⚙️</div>
+        <div class="text">我</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>首页</div>
+      <div>朋友</div>
+      <div>+</div>
+      <div>消息</div>
+      <div>我</div>
+    </div>
+  </div>
+
+</body>
+
+</html>
