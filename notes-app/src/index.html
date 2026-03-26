@@ -5,39 +5,68 @@
     <meta charset="UTF-8">
     <title>我的第一个网页</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: #f0f8ff;
-            text-align: center;
+            font-family: "Microsoft YaHei", sans-serif;
+            background: linear-gradient(to right, #5433ff, #20bdff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
             padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
         }
 
         h1 {
-            color: #2c3e50;
             font-size: 36px;
+            color: #222;
+            margin-bottom: 20px;
         }
 
         p {
-            font-size: 20px;
-            color: #555;
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
         }
 
         button {
-            padding: 10px 20px;
-            background: #3498db;
+            padding: 14px 30px;
+            background: #20bdff;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             font-size: 18px;
             cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #5433ff;
+            transform: translateY(-3px);
         }
     </style>
 </head>
 
 <body>
 
-    <h1>你好！我是前端新手</h1>
-    <p>这是我写的第一个网页，超有成就感！</p>
-    <button onclick="alert('我成功啦！')">点我试试</button>
+    <div class="card">
+        <h1>你好！我是前端新手</h1>
+        <p>这是我写的第一个美化版网页，渐变背景 + 卡片布局，超好看！</p>
+        <button onclick="alert('网页美化成功啦！🎉')">点我有惊喜</button>
+    </div>
 
 </body>
 
