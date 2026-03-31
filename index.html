@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日常计划记事本</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #111827;
+      --danger: #dc2626;
+      --border: #e5e7eb;
+      --done: #16a34a;
+      --soft: #f9fafb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 32px 18px;
+      background: radial-gradient(circle at top, #fbfcff 0%, var(--bg) 48%);
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid #eceff3;
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(17, 24, 39, 0.06);
+      overflow: hidden;
+    }
+
+    .toolbar {
+      padding: 18px;
+      border-bottom: 1px solid #edf1f6;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-bottom: 14px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    #planInput {
+      flex: 1 1 340px;
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0 14px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #planInput:focus,
+    #startInput:focus,
+    #dueInput:focus,
+    #priorityInput:focus,
+    #filterInput:focus {
+      border-color: #c7d2fe;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+
+    #startInput,
+    #dueInput,
+    #priorityInput,
+    #filterInput {
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0 12px;
+      font-size: 14px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #priorityInput,
+    #filterInput { min-width: 120px; }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 9px 13px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(17, 24, 39, 0.08);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .btn-danger {
+      border-color: #fecaca;
+      color: #b91c1c;
+      background: #fffafa;
+    }
+
+    .btn-secondary {
+      border-color: #d1d5db;
+      color: #374151;
+      background: #fff;
+    }
+
+    .panel {
+      padding: 12px 18px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 13px;
+      background: var(--soft);
+      border-bottom: 1px solid #edf1f6;
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .list {
+      list-style: none;
+      margin: 0;
+      padding: 10px 18px 18px;
+      min-height: 260px;
+      background: #fff;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 10px;
+      margin-top: 8px;
+      border: 1px solid #eef2f7;
+      border-radius: 12px;
+      user-select: none;
+      background: #fff;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .item:hover {
+      border-color: #e2e8f0;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .item:last-child { margin-bottom: 0; }
+    .item.dragging { opacity: 0.55; }
+
+    .drag-handle {
+      color: #9ca3af;
+      font-size: 18px;
+      cursor: move;
+      width: 18px;
+      text-align: center;
+    }
+
+    .item-text {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .item-meta {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      padding: 3px 9px;
+    }
+
+    .priority-tag {
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .priority-low {
+      color: #0369a1;
+      border-color: #bae6fd;
+      background: #f0f9ff;
+    }
+
+    .priority-medium {
+      color: #92400e;
+      border-color: #fde68a;
+      background: #fffbeb;
+    }
+
+    .priority-high {
+      color: #991b1b;
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    .item.done .item-text {
+      text-decoration: line-through;
+      color: var(--done);
+      opacity: 0.8;
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 52px 0;
+      border: 1px dashed #dbe3ee;
+      border-radius: 12px;
+      margin-top: 8px;
+      background: #fcfdff;
+    }
+
+    .status {
+      width: 100%;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 0 18px 18px;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="toolbar">
+      <div class="title">日常计划记事本</div>
+      <div class="input-row">
+        <input id="planInput" type="text" placeholder="输入今天要做的事，按回车或点添加" />
+        <input id="startInput" type="date" title="开始日期" />
+        <input id="dueInput" type="date" title="截止日期" />
+        <select id="priorityInput" title="优先级">
+          <option value="medium">中优先级</option>
+          <option value="high">高优先级</option>
+          <option value="low">低优先级</option>
+        </select>
+        <button class="btn btn-primary" id="addBtn">添加计划</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div id="summary">总计 0 项，已完成 0 项，当前显示：全部</div>
+      <div class="panel-actions">
+        <select id="filterInput" title="筛选">
+          <option value="all">全部</option>
+          <option value="todo">未完成</option>
+          <option value="done">已完成</option>
+        </select>
+        <button class="btn btn-secondary" id="exportBtn">导出 JSON</button>
+        <button class="btn btn-secondary" id="importBtn">导入 JSON</button>
+        <button class="btn btn-danger" id="clearDoneBtn">删除已完成</button>
+      </div>
+    </div>
+
+    <ul class="list" id="planList"></ul>
+    <div class="status" id="status">就绪</div>
+    <input id="importFileInput" type="file" accept="application/json,.json" hidden />
+  </main>
+
+  <script>
+    const STORAGE_KEY = "daily_plan_list_v2";
+
+    const planInput = document.getElementById("planInput");
+    const startInput = document.getElementById("startInput");
+    const dueInput = document.getElementById("dueInput");
+    const priorityInput = document.getElementById("priorityInput");
+    const filterInput = document.getElementById("filterInput");
+    const addBtn = document.getElementById("addBtn");
+    const planList = document.getElementById("planList");
+    const summary = document.getElementById("summary");
+    const status = document.getElementById("status");
+    const clearDoneBtn = document.getElementById("clearDoneBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const importBtn = document.getElementById("importBtn");
+    const importFileInput = document.getElementById("importFileInput");
+
+    /** @type {{id:number,text:string,done:boolean,startDate:string,dueDate:string,priority:"low"|"medium"|"high"}[]} */
+    let plans = [];
+    let dragId = null;
+
+    function formatTime(d) {
+      const HH = String(d.getHours()).padStart(2, "0");
+      const mm = String(d.getMinutes()).padStart(2, "0");
+      const ss = String(d.getSeconds()).padStart(2, "0");
+      return `${HH}:${mm}:${ss}`;
+    }
+
+    function setStatus(text) {
+      status.textContent = text;
+    }
+
+    function priorityLabel(priority) {
+      if (priority === "high") return "高";
+      if (priority === "low") return "低";
+      return "中";
+    }
+
+    function normalizePlan(item) {
+      return {
+        id: Number(item.id) || Date.now() + Math.random(),
+        text: String(item.text || "").trim(),
+        done: Boolean(item.done),
+        startDate: typeof item.startDate === "string" ? item.startDate : "",
+        dueDate: typeof item.dueDate === "string" ? item.dueDate : "",
+        priority: item.priority === "high" || item.priority === "low" ? item.priority : "medium"
+      };
+    }
+
+    function saveToLocal() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
+      setStatus(`已保存 ${formatTime(new Date())}`);
+    }
+
+    function loadFromLocal() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const oldRaw = localStorage.getItem("daily_plan_list_v1");
+      const source = raw || oldRaw;
+      if (!source) return;
+      try {
+        const data = JSON.parse(source);
+        if (Array.isArray(data)) {
+          plans = data.map(normalizePlan).filter((p) => p.text.length > 0);
+          setStatus("已读取本地计划");
+        }
+      } catch (e) {
+        setStatus("本地数据读取失败，已忽略");
+      }
+    }
+
+    function getFilteredPlans() {
+      if (filterInput.value === "todo") return plans.filter((p) => !p.done);
+      if (filterInput.value === "done") return plans.filter((p) => p.done);
+      return plans;
+    }
+
+    function updateSummary() {
+      const total = plans.length;
+      const done = plans.filter((p) => p.done).length;
+      const filterName = filterInput.value === "all" ? "全部" : (filterInput.value === "todo" ? "未完成" : "已完成");
+      summary.textContent = `总计 ${total} 项，已完成 ${done} 项，当前显示：${filterName}`;
+    }
+
+    function movePlan(fromId, toId) {
+      if (fromId === toId) return;
+      const fromIndex = plans.findIndex((p) => p.id === fromId);
+      const toIndex = plans.findIndex((p) => p.id === toId);
+      if (fromIndex < 0 || toIndex < 0) return;
+      const [moved] = plans.splice(fromIndex, 1);
+      plans.splice(toIndex, 0, moved);
+    }
+
+    function render() {
+      planList.innerHTML = "";
+      const visiblePlans = getFilteredPlans();
+
+      if (visiblePlans.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "当前筛选下没有计划，试试添加或切换筛选。";
+        planList.appendChild(empty);
+      } else {
+        visiblePlans.forEach((plan) => {
+          const li = document.createElement("li");
+          li.className = plan.done ? "item done" : "item";
+          li.draggable = filterInput.value === "all";
+
+          li.addEventListener("dragstart", () => {
+            dragId = plan.id;
+            li.classList.add("dragging");
+          });
+          li.addEventListener("dragend", () => {
+            li.classList.remove("dragging");
+          });
+          li.addEventListener("dragover", (e) => {
+            if (filterInput.value !== "all") return;
+            e.preventDefault();
+          });
+          li.addEventListener("drop", (e) => {
+            if (filterInput.value !== "all") return;
+            e.preventDefault();
+            if (dragId === null) return;
+            movePlan(dragId, plan.id);
+            dragId = null;
+            render();
+            saveToLocal();
+            setStatus("已更新排序");
+          });
+
+          const handle = document.createElement("span");
+          handle.className = "drag-handle";
+          handle.textContent = "⋮⋮";
+          handle.title = filterInput.value === "all" ? "拖拽排序" : "仅在“全部”筛选下可拖拽";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = plan.done;
+          checkbox.title = "标记完成";
+          checkbox.addEventListener("change", () => toggleDone(plan.id));
+
+          const text = document.createElement("span");
+          text.className = "item-text";
+          text.textContent = plan.text;
+
+          const meta = document.createElement("span");
+          meta.className = "item-meta";
+          if (plan.startDate && plan.dueDate) {
+            meta.textContent = `${plan.startDate} -> ${plan.dueDate}`;
+          } else if (plan.startDate) {
+            meta.textContent = `开始 ${plan.startDate}`;
+          } else if (plan.dueDate) {
+            meta.textContent = `截止 ${plan.dueDate}`;
+          } else {
+            meta.textContent = "无日期";
+          }
+
+          const pTag = document.createElement("span");
+          pTag.className = `priority-tag priority-${plan.priority}`;
+          pTag.textContent = `${priorityLabel(plan.priority)}优先级`;
+
+          const delBtn = document.createElement("button");
+          delBtn.className = "btn btn-danger";
+          delBtn.textContent = "删除";
+          delBtn.addEventListener("click", () => removePlan(plan.id));
+
+          li.appendChild(handle);
+          li.appendChild(checkbox);
+          li.appendChild(text);
+          li.appendChild(meta);
+          li.appendChild(pTag);
+          li.appendChild(delBtn);
+          planList.appendChild(li);
+        });
+      }
+
+      updateSummary();
+    }
+
+    function addPlan() {
+      const text = planInput.value.trim();
+      const startDate = startInput.value || "";
+      const dueDate = dueInput.value || "";
+      if (!text) {
+        setStatus("请输入计划内容");
+        return;
+      }
+      if (startDate && dueDate && startDate > dueDate) {
+        setStatus("开始日期不能晚于截止日期");
+        return;
+      }
+
+      plans.unshift({
+        id: Date.now() + Math.random(),
+        text,
+        done: false,
+        startDate,
+        dueDate,
+        priority: priorityInput.value
+      });
+
+      planInput.value = "";
+      startInput.value = "";
+      dueInput.value = "";
+      priorityInput.value = "medium";
+      render();
+      saveToLocal();
+    }
+
+    function removePlan(id) {
+      plans = plans.filter((p) => p.id !== id);
+      render();
+      saveToLocal();
+    }
+
+    function toggleDone(id) {
+      plans = plans.map((p) => (p.id === id ? { ...p, done: !p.done } : p));
+      render();
+      saveToLocal();
+    }
+
+    function clearDone() {
+      const doneCount = plans.filter((p) => p.done).length;
+      if (doneCount === 0) {
+        setStatus("没有已完成计划可删除");
+        return;
+      }
+      const ok = confirm(`确定删除 ${doneCount} 项已完成计划吗？`);
+      if (!ok) return;
+      plans = plans.filter((p) => !p.done);
+      render();
+      saveToLocal();
+      setStatus(`已删除 ${doneCount} 项已完成计划`);
+    }
+
+    function exportJson() {
+      const payload = {
+        version: 2,
+        exportedAt: new Date().toISOString(),
+        plans
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `daily-plans-${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setStatus("已导出 JSON");
+    }
+
+    function importJsonFromFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(String(reader.result || ""));
+          const imported = Array.isArray(parsed) ? parsed : parsed.plans;
+          if (!Array.isArray(imported)) {
+            setStatus("导入失败：JSON 格式不正确");
+            return;
+          }
+          plans = imported.map(normalizePlan).filter((p) => p.text.length > 0);
+          render();
+          saveToLocal();
+          setStatus(`已导入 ${plans.length} 项计划`);
+        } catch (e) {
+          setStatus("导入失败：无法解析 JSON");
+        } finally {
+          importFileInput.value = "";
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
+
+    addBtn.addEventListener("click", addPlan);
+    planInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addPlan();
+    });
+    clearDoneBtn.addEventListener("click", clearDone);
+    filterInput.addEventListener("change", () => {
+      render();
+      if (filterInput.value !== "all") {
+        setStatus("提示：仅在“全部”筛选下可拖拽排序");
+      }
+    });
+    exportBtn.addEventListener("click", exportJson);
+    importBtn.addEventListener("click", () => importFileInput.click());
+    importFileInput.addEventListener("change", () => {
+      const file = importFileInput.files && importFileInput.files[0];
+      importJsonFromFile(file);
+    });
+
+    loadFromLocal();
+    render();
+  </script>
+</body>
+</html>
